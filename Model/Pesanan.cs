@@ -1,19 +1,26 @@
-public enum Status{
-  Cooking,
-  Ready
-}
+using System.Collections.Generic;
 
-public class Pesanan:Base{
-  public int LokasiId {get;set;}
-  public Lokasi Lokasi{get;set;}=null;
+namespace WaiterBackend.Models
+{
+    public enum Status
+    {
+        Cooking,
+        Ready
+    }
 
-  public int ClientId {get;set;}
-  public Client Client{get;set;}=null;
+    public class Pesanan : Base
+    {
+        public int LokasiId { get; set; }
+        public Lokasi Lokasi { get; set; } = null!;
 
-  public Status Status{get;set;}=null;
+        public int ClientId { get; set; }
+        public Client Client { get; set; } = null!;
 
-  public string? Note{get;set;}
-  public decimal TotalHarga{get;set;}
+        public Status Status { get; set; }
 
-  public List<DetailPesanan> Items{get;set;}=new();
+        public string? Note { get; set; }
+        public decimal TotalHarga { get; set; }
+
+        public List<DetailPesanan> Items { get; set; } = new();
+    }
 }

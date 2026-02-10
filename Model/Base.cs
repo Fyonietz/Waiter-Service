@@ -1,4 +1,10 @@
-public abstract class Base{
-  public int Id {get;set;}
-  public DateTime CreatedAt {get;set;} = DateTime.UtcNow;
+using System;
+
+namespace WaiterBackend.Models
+{
+    public abstract class Base
+    {
+        public int Id { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
 }

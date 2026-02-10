@@ -1,8 +1,14 @@
-public class Client:Base{
-  public string name {get;set;}
+using System.Collections.Generic;
 
-  public int LokasiId {get;set;}
-  public Lokasi Lokasi{get;set;} = null;
+namespace WaiterBackend.Models
+{
+    public class Client : Base
+    {
+        public string name { get; set; } = "";
 
-  public List<Pesanan> Pesanan {get;set;} = new();
+        public int LokasiId { get; set; }
+        public Lokasi Lokasi { get; set; } = null!;
+
+        public List<Pesanan> Pesanan { get; set; } = new();
+    }
 }
