@@ -9,7 +9,9 @@ namespace WaiterBackend.Models
     }
 
     public class Pesanan : Base
-    {
+    {   
+
+
         public int LokasiId { get; set; }
         public Lokasi Lokasi { get; set; } = null!;
 
