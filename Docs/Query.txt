@@ -3,88 +3,86 @@
 //Sebagian Syntax Mungkin Work Mungkin Tidak Who Knows	
 
 
-//1.Table Roles
+-- 1. Table Roles
 CREATE TABLE Roles(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255) NOT NULL
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL
+);
 
-//2.Table Users
+-- 2. Table Users
 CREATE TABLE Users(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255) NOT NULL,
-	Password VARCHAR(255) NOT NULL,
-	Role_Id INT,
-	FOREIGN KEY (Role_Id) REFERENCES Roles(Id)
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Password TEXT NOT NULL,
+    Role_Id INTEGER,
+    FOREIGN KEY (Role_Id) REFERENCES Roles(Id)
+);
 
-//3.Table Types
+-- 3. Table Types
 CREATE TABLE Types(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255) NOT NULL
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL
+);
 
-//4.Table Status
+-- 4. Table Status
 CREATE TABLE Status(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255) NOT NULL
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL
+);
 
-//5.Menu
+-- 5. Menu
 CREATE TABLE Menu(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255),
-	Price DECIMAL(10,2),
-	Type_Id INT,
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT,
+    Price REAL,
+    Type_Id INTEGER,
+    FOREIGN KEY (Type_Id) REFERENCES Types(Id)
+);
 
-	FOREIGN KEY (Type_Id) REFERENCES Types(Id)
-)
-//6.Location
+-- 6. Location
 CREATE TABLE Location(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Name VARCHAR(255)
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT
+);
 
-//7.Orders
+-- 7. Orders_On_Waiter
 CREATE TABLE Orders_On_Waiter(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Id_User INT,
-	Customer_Name VARCHAR(255) NOT NULL,
-	Date TEXT DEFAULT(date('now'))
-	Id_Status INT,
-	Id_Location INT,
-	FOREIGN KEY (Id_User) REFERENCES Users(Id),
-	FOREIGN KEY (Id_Status) REFERENCES Status(Id),
-	FOREIGN KEY (Id_Location) REFERENCES Location(Id)
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Id_User INTEGER,
+    Customer_Name TEXT NOT NULL,
+    Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Id_Status INTEGER,
+    Id_Location INTEGER,
+    FOREIGN KEY (Id_User) REFERENCES Users(Id),
+    FOREIGN KEY (Id_Status) REFERENCES Status(Id),
+    FOREIGN KEY (Id_Location) REFERENCES Location(Id)
+);
 
-//8.Orders-Items
+-- 8. Orders_Items
 CREATE TABLE Orders_Items(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Id_Order INT,
-	Id_Menu INT,
-	Quantity INT NOT NULL,
-	Price_At_Order DECIMAL(10,2),
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Id_Order INTEGER,
+    Id_Menu INTEGER,
+    Quantity INTEGER NOT NULL,
+    Price_At_Order REAL,
+    FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
+    FOREIGN KEY (Id_Menu) REFERENCES Menu(Id)
+);
 
-	FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
-	FOREIGN KEY (Id_Menu) REFERENCES Menu(Id)
-)
-
-//9.Orders_On_Chef
+-- 9. Orders_On_Chef
 CREATE TABLE Orders_On_Chef(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Id_Order INT,
-	Id_User INT,
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Id_Order INTEGER,
+    Id_User INTEGER,
+    FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
+    FOREIGN KEY (Id_User) REFERENCES Users(Id)
+);
 
-	FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
-	FOREIGN KEY (Id_User) REFERENCES Users(Id)
-)
-//9.Orders_On_Cashier
+-- 10. Orders_On_Cashier
 CREATE TABLE Orders_On_Cashier(
-	Id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Id_Order INT,
-	Id_User INT,
-
-	FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
-	FOREIGN KEY (Id_User) REFERENCES Users(Id)
-)
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Id_Order INTEGER,
+    Id_User INTEGER,
+    FOREIGN KEY (Id_Order) REFERENCES Orders_On_Waiter(Id),
+    FOREIGN KEY (Id_User) REFERENCES Users(Id)
+);
