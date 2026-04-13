@@ -1,6 +1,7 @@
-public class Status
+namespace WaiterBackend.Models;
+
+public class Location
 {
 	public int Id { get; set; }
 	public string? Name { get; set; }
 }
-

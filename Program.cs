@@ -1,19 +1,24 @@
-using WaiterBackend.Database;
+using WaiterBackend.Services.Databases;
 using WaiterBackend.Services.Endpoints;
 using WaiterBackend.Services;
 using System.Diagnostics;
+using WaiterBackend.Api;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Services
 builder.Services.AddSingleton<Database>();
-builder.Services.AddScoped<ItemService>();
-builder.Services.AddScoped<PekerjaService>();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<LokasiService>();
-builder.Services.AddScoped<PesananService>();
+builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<MenuService>();
+
 
 var app = builder.Build();
+
+
+app.UseStaticFiles();
 
 // 🔹 FastAPI / Vite-style request logging
 app.Use(async (context, next) =>
@@ -44,13 +49,9 @@ app.MapGet("/fadli", () =>
     });
 });
 
-app.MapItemEndpoints();
-app.MapPekerjaEndpoints();
-app.MapAuthEndpoints();
-app.MapLokasiEndpoints();   
-app.MapPesananEndpoints();
+app.MapAuthApi();
+app.MapLocationApi();
+app.MapUserApi();
+app.MapMenuApi();
 
 app.Run();
-
-
-

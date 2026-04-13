@@ -1,3 +1,5 @@
+namespace WaiterBackend.Models;
+
 public class OrderOnChef
 {
     public int Id { get; set; }

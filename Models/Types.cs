@@ -1,3 +1,5 @@
+namespace WaiterBackend.Models;
+
 public class Type
 {
     public int Id { get; set; }
