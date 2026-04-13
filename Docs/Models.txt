@@ -1,0 +1,99 @@
+//Pisahkan di setiap File
+
+// 1. Roles
+public class Role
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
+// 2. Users
+public class User
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public string? Password { get; set; }
+    public int? RoleId { get; set; }
+
+    // Nullable computed property
+    public string? RoleName { get; set; }
+}
+
+// 3. Types
+public class Type
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
+// 4. Status
+public class Status
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
+// 5. Menu
+public class Menu
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public decimal? Price { get; set; }
+    public int? TypeId { get; set; }
+
+    public string? TypeName { get; set; }
+}
+
+// 6. Location
+public class Location
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
+// 7. Orders_On_Waiter
+public class OrderOnWaiter
+{
+    public int Id { get; set; }
+    public int? UserId { get; set; }
+    public string? CustomerName { get; set; }
+    public string? Date { get; set; }
+    public int? StatusId { get; set; }
+    public int? LocationId { get; set; }
+
+    public string? UserName { get; set; }
+    public string? StatusName { get; set; }
+    public string? LocationName { get; set; }
+}
+
+// 8. Orders_Items
+public class OrderItem
+{
+    public int Id { get; set; }
+    public int? OrderId { get; set; }
+    public int? MenuId { get; set; }
+    public int? Quantity { get; set; }
+    public decimal? PriceAtOrder { get; set; }
+
+    public string? MenuName { get; set; }
+}
+
+// 9. Orders_On_Chef
+public class OrderOnChef
+{
+    public int Id { get; set; }
+    public int? OrderId { get; set; }
+    public int? UserId { get; set; }
+
+    public string? UserName { get; set; }
+}
+
+// 10. Orders_On_Cashier
+public class OrderOnCashier
+{
+    public int Id { get; set; }
+    public int? OrderId { get; set; }
+    public int? UserId { get; set; }
+
+    public string? UserName { get; set; }
+}
