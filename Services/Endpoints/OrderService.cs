@@ -22,7 +22,7 @@ public class OrderService
 
             var orderId = await conn.ExecuteScalarAsync<int>(sqlOrder, order, transaction);
 
-            var sqlItem = @"INSERT INTO Orders_Items (OrderId, MenuId, Quantity, PriceAtOrder) 
+            var sqlItem = @"INSERT INTO Order_Items (OrderId, MenuId, Quantity, PriceAtOrder) 
                             VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
 
             foreach (var item in items)
