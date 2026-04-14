@@ -13,6 +13,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MenuService>();
+builder.Services.AddScoped<OrderService>();
 
 
 var app = builder.Build();
@@ -53,5 +54,6 @@ app.MapAuthApi();
 app.MapLocationApi();
 app.MapUserApi();
 app.MapMenuApi();
+app.MapOrderApi();
 
 app.Run();

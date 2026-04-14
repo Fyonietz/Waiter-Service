@@ -1,48 +1,29 @@
-using WaiterBackend.Services;
-using WaiterBackend.Models;
-using Microsoft.AspNetCore.Mvc;
 using WaiterBackend.Services.Endpoints;
+using WaiterBackend.Models;
 
-namespace WaiterBackend.Api
+namespace WaiterBackend.Api;
+
+public static class MenuApi
 {
-
-    public static class MenuApi
+    public static void MapMenuApi(this IEndpointRouteBuilder app)
     {
-        public static void MapMenuApi(this IEndpointRouteBuilder app)
+        var group = app.MapGroup("api/menu");
+
+        group.MapGet("/", async (MenuService service) =>
+            Results.Ok(await service.GetAll()));
+
+        group.MapPost("/", async (Menu menu, MenuService service) =>
         {
-            var group = app.MapGroup("api/menu");
-
-            group.MapGet("/", async (MenuService service) => Results.Ok(await service.GetAll()));
-
-            group.MapPost("/", async (HttpContext context, MenuService service) =>
+            if (string.IsNullOrEmpty(menu.Name) || menu.Price <= 0)
             {
-                var form = await context.Request.ReadFormAsync();
+                return Results.BadRequest("Nama menu harus diisi dan harga harus lebih dari 0");
+            }
 
-                var name = form["name"];
-                var price = decimal.Parse(form["price"]!);
-                var typeId = int.Parse(form["typeId"]!);
-                var file = form.Files.GetFile("image");
+            var success = await service.Create(menu);
+            return success ? Results.Ok("Menu berhasil ditambahkan") : Results.BadRequest();
+        });
 
-                string fileName = "";
-                if (file != null)
-                {
-                    fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/menu", fileName);
-
-                    using var stream = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(stream);
-                }
-
-                var newMenu = new Menu
-                {
-                    Name = name,
-                    Price = price,
-                    TypeId = typeId,
-                    TypeName = fileName
-                };
-
-                return await service.Create(newMenu) ? Results.Ok("Menu Created") : Results.BadRequest();
-            }).DisableAntiforgery();
-        }
+        group.MapDelete("/{id}", async (int id, MenuService service) =>
+            await service.Delete(id) ? Results.Ok("Menu dihapus") : Results.NotFound());
     }
 }
