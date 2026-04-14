@@ -17,13 +17,14 @@ public class OrderService
         try
         {
             var sqlOrder = @"INSERT INTO Orders_On_Waiter (UserId, CustomerName, Date, StatusId, LocationId) 
-                             VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId);
-                             SELECT last_insert_rowid();";
+                         VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId)";
 
-            var orderId = await conn.ExecuteScalarAsync<int>(sqlOrder, order, transaction);
+            await conn.ExecuteAsync(sqlOrder, order, transaction);
+
+            var orderId = await conn.QueryFirstOrDefaultAsync<int>("SELECT last_insert_rowid()", null, transaction);
 
             var sqlItem = @"INSERT INTO Order_Items (OrderId, MenuId, Quantity, PriceAtOrder) 
-                            VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
+                        VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
 
             foreach (var item in items)
             {
