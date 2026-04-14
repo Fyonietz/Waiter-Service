@@ -17,14 +17,14 @@ public class OrderService
         try
         {
             var sqlOrder = @"INSERT INTO Orders_On_Waiter (UserId, CustomerName, Date, StatusId, LocationId) 
-                         VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId)";
+                             VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId)";
 
             await conn.ExecuteAsync(sqlOrder, order, transaction);
 
             var orderId = await conn.QueryFirstOrDefaultAsync<int>("SELECT last_insert_rowid()", null, transaction);
 
             var sqlItem = @"INSERT INTO Order_Items (OrderId, MenuId, Quantity, PriceAtOrder) 
-                        VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
+                            VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
 
             foreach (var item in items)
             {
@@ -51,10 +51,39 @@ public class OrderService
         SELECT o.*, u.Name as WaiterName, s.Name as StatusName, l.Name as TableName
         FROM Orders_On_Waiter o
         JOIN Users u ON o.UserId = u.Id
-        JOIN Status s ON o.StatusId = s.Id
+        JOIN Statuses s ON o.StatusId = s.Id
         JOIN Locations l ON o.LocationId = l.Id
         WHERE o.StatusId = @StatusId";
 
         return await conn.QueryAsync(sql, new { StatusId = statusId });
+    }
+
+    public async Task<bool> UpdateStatus(int orderId, int statusId)
+    {
+        using var conn = _db.GetConnection();
+        string sql = "UPDATE Orders_On_Waiter SET StatusId = @StatusId WHERE Id = @Id";
+        return await conn.ExecuteAsync(sql, new { StatusId = statusId, Id = orderId }) > 0;
+    }
+
+    public async Task<dynamic> GetOrderDetails(int orderId)
+    {
+        using var conn = _db.GetConnection();
+        var header = await conn.QueryFirstOrDefaultAsync(@"
+        SELECT o.*, u.Name as WaiterName, l.Name as LocationName, s.Name as StatusName
+        FROM Orders_On_Waiter o
+        JOIN Users u ON o.UserId = u.Id
+        JOIN Locations l ON o.LocationId = l.Id
+        JOIN Statuses s ON o.StatusId = s.Id
+        WHERE o.Id = @Id", new { Id = orderId });
+
+        if (header == null) return null;
+
+        var items = await conn.QueryAsync(@"
+        SELECT i.*, m.Name as MenuName
+        FROM Order_Items i
+        JOIN Menus m ON i.MenuId = m.Id
+        WHERE i.OrderId = @OrderId", new { OrderId = orderId });
+
+        return new { Order = header, Items = items };
     }
 }

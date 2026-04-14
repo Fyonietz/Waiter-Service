@@ -24,5 +24,17 @@ public static class OrderApi
         {
             return Results.Ok(await service.GetOrdersByStatus(id));
         });
+
+        group.MapPatch("/{id}/status", async (int id, int statusId, OrderService service) =>
+        {
+            var success = await service.UpdateStatus(id, statusId);
+            return success ? Results.Ok("Status diperbarui") : Results.NotFound();
+        });
+
+        group.MapGet("/{id}", async (int id, OrderService service) =>
+        {
+            var detail = await service.GetOrderDetails(id);
+            return detail != null ? Results.Ok(detail) : Results.NotFound();
+        });
     }
 }
