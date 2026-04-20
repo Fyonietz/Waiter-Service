@@ -8,4 +8,6 @@ public class Menu
     public int? TypeId { get; set; }
 
     public string? TypeName { get; set; }
+
+    public string? ImageUrl { get; set; }
 }

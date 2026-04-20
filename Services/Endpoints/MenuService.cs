@@ -22,7 +22,8 @@ namespace WaiterBackend.Services.Endpoints
         public async Task<bool> Create(Menu menu)
         {
             using var conn = _db.GetConnection();
-            var sql = "INSERT INTO Menus (Name, Price, TypeId, TypeName) VALUES (@Name, @Price, @TypeId, @TypeName)";
+            var sql = @"INSERT INTO Menus (Name, Price, TypeId, TypeName, ImageUrl) 
+           VALUES(@Name, @Price, @TypeId, @TypeName, @ImageUrl)";
             return await conn.ExecuteAsync(sql, menu) > 0;
         }
 
