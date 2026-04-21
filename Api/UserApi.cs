@@ -16,6 +16,9 @@ namespace WaiterBackend.Api
 
             group.MapPost("/", async (User user, UserService service) =>
                 await service.Create(user) ? Results.Created($"/api/user/{user.Id}", user) : Results.BadRequest());
+
+            group.MapGet("/", async (UserService service) =>
+                Results.Ok(await service.GetAll()));
         }
     }
 }

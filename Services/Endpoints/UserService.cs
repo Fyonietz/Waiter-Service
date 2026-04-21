@@ -29,5 +29,14 @@ namespace WaiterBackend.Services.Endpoints
             using var conn = _db.GetConnection();
             return await conn.ExecuteAsync("DELETE FROM Users WHERE Id = @Id", new { Id = id }) > 0;
         }
+
+        public async Task<IEnumerable<User>> GetAll()
+        {
+            using var conn = _db.GetConnection();
+            string sql = @"SELECT u.*, r.Name as RoleName 
+                   FROM Users u 
+                   JOIN Roles r ON u.RoleId = r.Id";
+            return await conn.QueryAsync<User>(sql);
+        }
     }
 }

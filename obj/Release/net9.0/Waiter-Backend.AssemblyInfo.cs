@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Waiter-Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a1e03aa5f2ce8d0be78b2d8783b757cc82127759")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a3b80c4742ea06691b9b26bfe918ec42329b7449")]
 [assembly: System.Reflection.AssemblyProductAttribute("Waiter-Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Waiter-Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
