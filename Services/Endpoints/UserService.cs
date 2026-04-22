@@ -38,5 +38,27 @@ namespace WaiterBackend.Services.Endpoints
                    JOIN Roles r ON u.RoleId = r.Id";
             return await conn.QueryAsync<User>(sql);
         }
+
+        public async Task<bool> Update(int id, User updatedUser)
+        {
+            using var conn = _db.GetConnection();
+
+            string sql = @"
+        UPDATE Users
+        SET Name = @Name,
+            Password = @Password,
+            RoleId = @RoleId
+        WHERE Id = @Id";
+
+            var result = await conn.ExecuteAsync(sql, new
+            {
+                Id = id,
+                updatedUser.Name,
+                updatedUser.Password,
+                updatedUser.RoleId
+            });
+
+            return result > 0;
+        }
     }
 }

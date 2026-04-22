@@ -19,6 +19,17 @@ namespace WaiterBackend.Api
 
             group.MapGet("/", async (UserService service) =>
                 Results.Ok(await service.GetAll()));
+
+            group.MapDelete("/{id}", async (int id, UserService service) =>
+                await service.Delete(id) ? Results.NoContent() : Results.NotFound());
+
+            group.MapPut("/{id}", async (int id, User updatedUser, UserService service) =>
+            {
+                var result = await service.Update(id, updatedUser);
+
+                return result ? Results.Ok(updatedUser) : Results.NotFound();
+            });
+
         }
     }
 }
