@@ -32,5 +32,33 @@ namespace WaiterBackend.Services.Endpoints
             using var conn = _db.GetConnection();
             return await conn.ExecuteAsync("DELETE FROM Menus WHERE Id = @Id", new { Id = id }) > 0;
         }
+
+        public async Task<bool> UpdateName(int id, Menu updatedMenu)
+        {
+            using var conn = _db.GetConnection();
+            var sql = @"
+            UPDATE Menus
+            SET Name = @Name
+            WHERE Id = @Id";
+            return await conn.ExecuteAsync(sql, new
+            {
+                Id = id,
+                updatedMenu.Name,
+            }) > 0;
+        }
+
+        public async Task<bool> UpdatePrice(int id, Menu updatedMenu)
+        {
+            using var conn = _db.GetConnection();
+            var sql = @"
+            UPDATE Menus
+            SET Price = @Price
+            WHERE Id = @Id";
+            return await conn.ExecuteAsync(sql, new
+            {
+                Id = id,
+                updatedMenu.Price,
+            }) > 0;
+        }
     }
 }

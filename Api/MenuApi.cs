@@ -60,5 +60,29 @@ public static class MenuApi
 
         group.MapDelete("/{id}", async (int id, MenuService service) =>
             await service.Delete(id) ? Results.Ok("Menu dihapus") : Results.NotFound());
+
+        group.MapPut("/name/{id}", async (int id, Menu updatedMenu, MenuService service) =>
+        {
+            try
+            {
+                return Results.Ok(await service.UpdateName(id, updatedMenu) ? Results.Ok("Nama Menu Diperbarui") : Results.NotFound());
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
+        });
+
+        group.MapPut("/price/{id}", async (int id, Menu updatedMenu, MenuService service) =>
+        {
+            try
+            {
+                return Results.Ok(await service.UpdatePrice(id, updatedMenu) ? Results.Ok("Harga Menu Diperbarui") : Results.NotFound());
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
+        });
     }
 }
