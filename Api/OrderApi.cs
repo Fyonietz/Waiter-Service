@@ -13,28 +13,62 @@ public static class OrderApi
 
         group.MapPost("/", async (OrderRequest request, OrderService service) =>
         {
-            if (request.Items == null || request.Items.Count == 0)
-                return Results.BadRequest("Pesanan tidak boleh kosong");
+            try
+            {
+                if (request.Items == null || request.Items.Count == 0)
+                    return Results.BadRequest("Pesanan tidak boleh kosong");
 
-            var success = await service.CreateOrder(request.Order, request.Items);
-            return success ? Results.Ok("Pesanan berhasil dibuat") : Results.BadRequest("Gagal memproses pesanan");
+                var success = await service.CreateOrder(request.Order, request.Items);
+                return success
+                    ? Results.Ok("Pesanan berhasil dibuat")
+                    : Results.BadRequest("Gagal memproses pesanan");
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
         });
 
         group.MapGet("/status/{id}", async (int id, OrderService service) =>
         {
-            return Results.Ok(await service.GetOrdersByStatus(id));
+            try
+            {
+                return Results.Ok(await service.GetOrdersByStatus(id));
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
         });
 
         group.MapPatch("/{id}/status", async (int id, int statusId, OrderService service) =>
         {
-            var success = await service.UpdateStatus(id, statusId);
-            return success ? Results.Ok("Status diperbarui") : Results.NotFound();
+            try
+            {
+                var success = await service.UpdateStatus(id, statusId);
+                return success
+                    ? Results.Ok("Status diperbarui")
+                    : Results.NotFound();
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
         });
 
         group.MapGet("/{id}", async (int id, OrderService service) =>
         {
-            var detail = await service.GetOrderDetails(id);
-            return detail != null ? Results.Ok(detail) : Results.NotFound();
+            try
+            {
+                var detail = await service.GetOrderDetails(id);
+                return detail != null
+                    ? Results.Ok(detail)
+                    : Results.NotFound();
+            }
+            catch (Exception ex)
+            {
+                return Results.InternalServerError(ex.Message);
+            }
         });
     }
 }

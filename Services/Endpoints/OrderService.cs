@@ -9,6 +9,11 @@ public class OrderService
     private readonly Database _db;
     public OrderService(Database db) => _db = db;
 
+    private class MenuPrice
+    {
+        public int Id { get; set; } = 0;
+        public decimal Price { get; set; } = 0;
+    }
     public async Task<bool> CreateOrder(OrderOnWaiter order, List<OrderItem> items)
     {
         using var conn = _db.GetConnection();
@@ -17,18 +22,32 @@ public class OrderService
         try
         {
             var sqlOrder = @"INSERT INTO Orders_On_Waiter (UserId, CustomerName, Date, StatusId, LocationId) 
-                             VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId)";
+                         VALUES (@UserId, @CustomerName, @Date, @StatusId, @LocationId)";
 
             await conn.ExecuteAsync(sqlOrder, order, transaction);
 
             var orderId = await conn.QueryFirstOrDefaultAsync<int>("SELECT last_insert_rowid()", null, transaction);
 
+            // Ambil semua MenuId yang dibutuhkan sekaligus
+            var menuIds = items.Select(i => i.MenuId).Distinct();
+            var prices = (await conn.QueryAsync<MenuPrice>(
+     "SELECT Id, Price FROM Menus WHERE Id IN @Ids",
+     new { Ids = menuIds },
+     transaction
+ )).ToDictionary(m => (int)m.Id, m => (decimal)m.Price);
+
             var sqlItem = @"INSERT INTO Order_Items (OrderId, MenuId, Quantity, PriceAtOrder) 
-                            VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
+                        VALUES (@OrderId, @MenuId, @Quantity, @PriceAtOrder)";
 
             foreach (var item in items)
             {
                 item.OrderId = orderId;
+
+                // Kalau MenuId tidak ditemukan di DB, batalkan transaksi
+                if (!prices.TryGetValue(item.MenuId ?? 0, out var unitPrice) || item.MenuId == null)
+                    throw new Exception($"Menu ID {item.MenuId} tidak ditemukan.");
+
+                item.PriceAtOrder = item.Quantity * unitPrice; // otomatis dihitung
                 await conn.ExecuteAsync(sqlItem, item, transaction);
             }
 
@@ -65,7 +84,7 @@ public class OrderService
         return await conn.ExecuteAsync(sql, new { StatusId = statusId, Id = orderId }) > 0;
     }
 
-    public async Task<dynamic> GetOrderDetails(int orderId)
+    public async Task<dynamic?> GetOrderDetails(int orderId)
     {
         using var conn = _db.GetConnection();
         var header = await conn.QueryFirstOrDefaultAsync(@"

@@ -1,9 +1,9 @@
 using WaiterBackend.Services;
 using WaiterBackend.Models;
 using WaiterBackend.Services.Endpoints;
+
 namespace WaiterBackend.Api
 {
-
     public static class UserApi
     {
         public static void MapUserApi(this IEndpointRouteBuilder app)
@@ -12,24 +12,73 @@ namespace WaiterBackend.Api
 
             // Contoh: api/user/role/2 untuk mendapatkan semua Waiter
             group.MapGet("/role/{roleId}", async (int roleId, UserService service) =>
-                Results.Ok(await service.GetByRole(roleId)));
+            {
+                try
+                {
+                    return Results.Ok(await service.GetByRole(roleId));
+                }
+                catch (Exception ex)
+                {
+                    return Results.InternalServerError(ex.Message);
+                }
+            });
 
             group.MapPost("/", async (User user, UserService service) =>
-                await service.Create(user) ? Results.Created($"/api/user/{user.Id}", user) : Results.BadRequest());
+            {
+                try
+                {
+                    var success = await service.Create(user);
+                    return success
+                        ? Results.Created($"/api/user/{user.Id}", user)
+                        : Results.BadRequest();
+                }
+                catch (Exception ex)
+                {
+                    return Results.InternalServerError(ex.Message);
+                }
+            });
 
             group.MapGet("/", async (UserService service) =>
-                Results.Ok(await service.GetAll()));
+            {
+                try
+                {
+                    return Results.Ok(await service.GetAll());
+                }
+                catch (Exception ex)
+                {
+                    return Results.InternalServerError(ex.Message);
+                }
+            });
 
             group.MapDelete("/{id}", async (int id, UserService service) =>
-                await service.Delete(id) ? Results.NoContent() : Results.NotFound());
+            {
+                try
+                {
+                    var success = await service.Delete(id);
+                    return success
+                        ? Results.NoContent()
+                        : Results.NotFound();
+                }
+                catch (Exception ex)
+                {
+                    return Results.InternalServerError(ex.Message);
+                }
+            });
 
             group.MapPut("/{id}", async (int id, User updatedUser, UserService service) =>
             {
-                var result = await service.Update(id, updatedUser);
-
-                return result ? Results.Ok(updatedUser) : Results.NotFound();
+                try
+                {
+                    var result = await service.Update(id, updatedUser);
+                    return result
+                        ? Results.Ok(updatedUser)
+                        : Results.NotFound();
+                }
+                catch (Exception ex)
+                {
+                    return Results.InternalServerError(ex.Message);
+                }
             });
-
         }
     }
 }
