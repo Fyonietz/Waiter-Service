@@ -62,7 +62,7 @@ public class OrderService
         }
     }
 
-    public async Task<IEnumerable<dynamic>> GetOrdersByStatus(int statusId)
+    public async Task<IEnumerable<dynamic>> GetOrdersByStatus(int id, int statusId)
     {
         using var conn = _db.GetConnection();
 
@@ -72,9 +72,9 @@ public class OrderService
         JOIN Users u ON o.UserId = u.Id
         JOIN Statuses s ON o.StatusId = s.Id
         JOIN Locations l ON o.LocationId = l.Id
-        WHERE o.StatusId = @StatusId";
+        WHERE o.StatusId = @StatusId AND o.Id = @Id";
 
-        return await conn.QueryAsync(sql, new { StatusId = statusId });
+        return await conn.QueryAsync(sql, new { StatusId = statusId, Id = id });
     }
 
     public async Task<bool> UpdateStatus(int orderId, int statusId)

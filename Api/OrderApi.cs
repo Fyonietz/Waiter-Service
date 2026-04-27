@@ -29,11 +29,11 @@ public static class OrderApi
             }
         });
 
-        group.MapGet("/status/{id}", async (int id, OrderService service) =>
+        group.MapGet("/{id}/status/{statusId}", async (int id,int statusId, OrderService service) =>
         {
             try
             {
-                return Results.Ok(await service.GetOrdersByStatus(id));
+                return Results.Ok(await service.GetOrdersByStatus(id,statusId));
             }
             catch (Exception ex)
             {
@@ -41,7 +41,7 @@ public static class OrderApi
             }
         });
 
-        group.MapPatch("/{id}/status", async (int id, int statusId, OrderService service) =>
+        group.MapPatch("/{id}/status/{statusId}", async (int id, int statusId, OrderService service) =>
         {
             try
             {
