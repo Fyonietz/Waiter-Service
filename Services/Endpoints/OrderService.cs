@@ -62,19 +62,19 @@ public class OrderService
         }
     }
 
-    public async Task<IEnumerable<dynamic>> GetOrdersByStatus(int id, int statusId)
+    public async Task<IEnumerable<dynamic>> GetOrdersByStatus(int statusId)
     {
         using var conn = _db.GetConnection();
 
         var sql = @"
-        SELECT o.*, u.Name as WaiterName, s.Name as StatusName, l.Name as TableName
-        FROM Orders_On_Waiter o
-        JOIN Users u ON o.UserId = u.Id
-        JOIN Statuses s ON o.StatusId = s.Id
-        JOIN Locations l ON o.LocationId = l.Id
-        WHERE o.StatusId = @StatusId AND o.Id = @Id";
+    SELECT o.*, u.Name as WaiterName, s.Name as StatusName, l.Name as TableName
+    FROM Orders_On_Waiter o
+    JOIN Users u ON o.UserId = u.Id
+    JOIN Statuses s ON o.StatusId = s.Id
+    JOIN Locations l ON o.LocationId = l.Id
+    WHERE o.StatusId = @StatusId";
 
-        return await conn.QueryAsync(sql, new { StatusId = statusId, Id = id });
+        return await conn.QueryAsync(sql, new { StatusId = statusId });
     }
 
     public async Task<bool> UpdateStatus(int orderId, int statusId)
@@ -104,5 +104,17 @@ public class OrderService
         WHERE i.OrderId = @OrderId", new { OrderId = orderId });
 
         return new { Order = header, Items = items };
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllOrders()
+    {
+        using var conn = _db.GetConnection();
+        var sql = @"
+        SELECT o.*, u.Name as WaiterName, s.Name as StatusName, l.Name as TableName
+        FROM Orders_On_Waiter o
+        JOIN Users u ON o.UserId = u.Id
+        JOIN Statuses s ON o.StatusId = s.Id
+        JOIN Locations l ON o.LocationId = l.Id";
+        return await conn.QueryAsync(sql);
     }
 }
